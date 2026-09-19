@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fixie AI - Intelligent Multi-Agent Code Debugger</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="dark-theme">
+  <!-- Top Navbar -->
+  <header class="navbar">
+    <div class="nav-brand">
+      <div class="logo-icon">🔧</div>
+      <div class="brand-text">
+        <h1>Fixie <span>AI</span></h1>
+        <span class="badge-tag">Multi-Agent Studio</span>
+      </div>
+    </div>
+
+    <div class="nav-center">
+      <div class="system-pill" id="gemini-status">
+        <span class="dot yellow"></span>
+        <span class="label">Gemini AI</span>
+      </div>
+      <div class="system-pill" id="mysql-status">
+        <span class="dot yellow"></span>
+        <span class="label">MySQL DB</span>
+      </div>
+    </div>
+
+    <div class="nav-actions">
+      <button class="btn btn-secondary" id="open-history-btn">
+        <span class="icon">🗄️</span> Session History
+        <span class="count-badge" id="session-count-badge">0</span>
+      </button>
+      <a href="https://github.com/kawish918/Fixie-AI-Agent-Debugger" target="_blank" class="btn btn-ghost" title="Documentation">
+        <span>📖</span> Docs
+      </a>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <main class="studio-layout">
+    <!-- Left Column: Code Workspace -->
+    <section class="workspace-panel">
+      <div class="panel-header">
+        <div class="header-title-group">
+          <h2>Source Code Studio</h2>
+          <span class="language-pill">Python 3.x</span>
+        </div>
+        <div class="preset-controls">
+          <label for="example-select">Sample Bug:</label>
+          <select id="example-select" class="dropdown">
+            <option value="" disabled selected>Select preset...</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="editor-container">
+        <div class="line-numbers" id="line-numbers">1</div>
+        <textarea 
+          id="code-editor" 
+          placeholder="Paste or write your Python code here..." 
+          spellcheck="false"
+        ></textarea>
+      </div>
+
+      <div class="workspace-footer">
+        <div class="editor-stats">
+          <span id="line-count">1 lines</span>
+          <span class="sep">•</span>
+          <span id="char-count">0 chars</span>
+        </div>
+        <div class="editor-actions">
+          <button class="btn btn-ghost" id="clear-btn">Clear</button>
+          <button class="btn btn-primary" id="debug-btn">
+            <span class="btn-spinner hidden" id="debug-spinner"></span>
+            <span class="btn-icon" id="debug-icon">⚡</span>
+            <span class="btn-label" id="debug-label">Analyze & Debug Code</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Right Column: Agent Workflow & Diagnosis Results -->
+    <section class="diagnostics-panel">
+      <!-- Multi-Agent Orchestration Card -->
+      <div class="agent-deck">
+        <div class="deck-header">
+          <h3>LangGraph Multi-Agent Pipeline</h3>
+          <span class="pipeline-status" id="pipeline-status-text">Ready</span>
+        </div>
+        <div class="agents-grid">
+          <!-- Agent 1 -->
+          <div class="agent-card" id="card-syntax">
+            <div class="agent-avatar">🔍</div>
+            <div class="agent-info">
+              <div class="agent-name">Syntax Checker</div>
+              <div class="agent-role">Detects errors & line offsets</div>
+            </div>
+            <div class="agent-state idle" id="state-syntax">Idle</div>
+          </div>
+
+          <!-- Agent 2 -->
+          <div class="agent-card" id="card-logic">
+            <div class="agent-avatar">🧠</div>
+            <div class="agent-info">
+              <div class="agent-name">Logic Reasoner</div>
+              <div class="agent-role">Extracts intended logic</div>
+            </div>
+            <div class="agent-state idle" id="state-logic">Idle</div>
+          </div>
+
+          <!-- Agent 3 -->
+          <div class="agent-card" id="card-fixer">
+            <div class="agent-avatar">🔧</div>
+            <div class="agent-info">
+              <div class="agent-name">Fix Suggester</div>
+              <div class="agent-role">Generates patch & confidence</div>
+            </div>
+            <div class="agent-state idle" id="state-fixer">Idle</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Results Viewport -->
+      <div class="results-viewport" id="results-viewport">
+        <!-- Initial Placeholder State -->
+        <div class="empty-state" id="empty-state">
+          <div class="empty-illustration">🤖💡</div>
+          <h4>No Analysis Run Yet</h4>
+          <p>Load a sample bug from the presets or paste your Python code, then click <strong>"Analyze & Debug Code"</strong> to run the multi-agent reasoning graph.</p>
+        </div>
+
+        <!-- Populated Results Content -->
+        <div class="results-content hidden" id="results-content">
+          <!-- Diagnosis Card -->
+          <div class="result-card bug-report-card">
+            <div class="card-head">
+              <div class="head-left">
+                <span class="severity-badge high" id="badge-severity">HIGH SEVERITY</span>
+                <span class="line-badge" id="badge-line">Line --</span>
+              </div>
+              <div class="confidence-gauge">
+                <span class="confidence-label">AI Confidence:</span>
+                <div class="progress-bar-bg">
+                  <div class="progress-bar-fill" id="confidence-bar" style="width: 0%;"></div>
+                </div>
+                <span class="confidence-value" id="confidence-value">0%</span>
+              </div>
+            </div>
+
+            <div class="card-body">
+              <div class="report-row">
+                <span class="row-label">Issue:</span>
+                <p class="bug-desc" id="bug-description">No bug details available.</p>
+              </div>
+              <div class="report-row" id="logic-row">
+                <span class="row-label">Intended Logic:</span>
+                <p class="logic-desc" id="intended-logic">No logic explanation.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Suggested Fix Card -->
+          <div class="result-card fix-card">
+            <div class="card-head">
+              <div class="fix-title-group">
+                <h4>🔧 Suggested Patch</h4>
+                <span class="db-sync-badge hidden" id="db-sync-badge">
+                  <span class="sync-dot"></span> Saved to MySQL #<span id="sync-session-id"></span>
+                </span>
+              </div>
+              <button class="btn btn-secondary btn-sm" id="copy-fix-btn">
+                <span class="copy-icon">📋</span> Copy Patch
+              </button>
+            </div>
+            <div class="explanation-box" id="fix-explanation">
+              Fix explanation will appear here.
+            </div>
+            <div class="code-preview-wrapper">
+              <pre><code class="language-python" id="suggested-fix-code"># Fix will appear here</code></pre>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- History Sidebar Drawer -->
+  <aside class="history-drawer" id="history-drawer">
+    <div class="drawer-header">
+      <div class="drawer-title">
+        <span class="icon">🗄️</span>
+        <h3>MySQL Debugging Memory</h3>
+      </div>
+      <button class="close-btn" id="close-history-btn">✕</button>
+    </div>
+    <div class="drawer-subtitle">
+      Persisted debugging sessions from MySQL <code>debugging_sessions</code> table.
+    </div>
+    <div class="drawer-list" id="history-list">
+      <div class="loading-history">Loading sessions...</div>
+    </div>
+  </aside>
+
+  <div class="drawer-backdrop" id="drawer-backdrop"></div>
+
+  <!-- Toast Notifications -->
+  <div class="toast-container" id="toast-container"></div>
+
+  <script src="/static/js/app.js"></script>
+</body>
+</html>

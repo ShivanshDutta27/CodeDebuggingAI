@@ -1,0 +1,18 @@
+{
+  "name": "mern-ecommerce-store",
+  "version": "1.0.0",
+  "description": "Full-stack MERN application with React frontend and Express backend",
+  "main": "server/server.js",
+  "scripts": {
+    "start": "node server/server.js",
+    "dev:server": "nodemon server/server.js",
+    "dev:client": "cd client && npm run dev",
+    "dev": "concurrently \"npm run dev:server\" \"npm run dev:client\"",
+    "test": "jest"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5"
+  }
+}

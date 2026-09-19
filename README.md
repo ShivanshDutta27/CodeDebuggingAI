@@ -1,27 +1,31 @@
-# 🔧 Fixie: AI Agent Debugger
+# 🔧 Fixie: Polyglot AI Agent Debugger Studio
 
-An intelligent Python debugging assistant powered by AI agents using LangChain and Ollama Llama 3.2. Fixie automatically detects bugs, analyzes code logic, and suggests fixes through a coordinated multi-agent workflow.
+An intelligent multi-language debugging studio powered by coordinated LangGraph AI agents and the Google Gemini API. Fixie automatically profiles your code environment (LeetCode algorithms vs. MERN web applications vs. compiled CLI apps), checks syntax/compiler rules across any programming language (C++, Python, JavaScript/React, Java, Go, Rust), deduces intent, synthesizes idiomatic fixes, and produces verified test cases or browser runbooks.
 
 ![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
+![React](https://img.shields.io/badge/React-18-blue.svg)
 ![LangChain](https://img.shields.io/badge/LangChain-🦜🔗-green.svg)
-![Ollama](https://img.shields.io/badge/Ollama-Llama3.2-orange.svg)
+![Gemini](https://img.shields.io/badge/Google-Gemini_API-blue.svg)
 
 ## ✨ Features
 
-- 🤖 **Multi-Agent Architecture**: Specialized agents for syntax checking, logic reasoning, and fix suggestions
-- 🔍 **Intelligent Bug Detection**: Identifies syntax errors, runtime issues, and logic problems
-- 📍 **Line-by-Line Analysis**: Pinpoints exact locations of bugs with line numbers
-- 🎯 **Confidence Scoring**: Provides confidence levels for suggested fixes
-- 🔄 **LangGraph Workflow**: Orchestrated agent coordination using LangGraph
-- 🦙 **Local AI**: Powered by Ollama Llama 3.2 for privacy and offline usage
+- 🌐 **Context & Environment Profiler**: Auto-detects programming languages (C++, Python, JS/TS, Java, Go, Rust) and project types (`leetcode`, `mern`, `compiled_app`, `backend_api`).
+- 🤖 **5-Agent LangGraph Pipeline**: Real-time coordinated workflow:
+  1. **Context Profiler**: Detects language, project type, and build commands.
+  2. **Compiler & Syntax Auditor**: Language-specific AST and memory safety analysis.
+  3. **Logic Reasoner**: Intent, algorithmic data flow, and complexity analysis.
+  4. **Fix Architect**: Idiomatic, complete code repairs.
+  5. **Verification Harness**: Generates LeetCode test cases + test runner, or MERN browser verification runbooks.
+- ⚡ **Zero-Simulation Real-Time SSE**: Frontend updates strictly as Gemini streams genuine execution chunks.
+- 🎨 **Minimalist Studio UI**: Built with React + Vite and custom Vanilla CSS with dark obsidian aesthetics, code editor with gutter numbers, confidence scores, and MySQL history storage.
 
 ## 🚀 Quick Start
 
 ### Prerequisites
 
 - Python 3.8+ (3.10+ preferred)
-- Ollama installed and running
-- Git (for cloning)
+- Google Gemini API Key
+- MySQL 8.0+ (optional, for session persistence)
 
 ### Installation
 
@@ -39,24 +43,15 @@ An intelligent Python debugging assistant powered by AI agents using LangChain a
 
 3. **Install dependencies**
    ```bash
-   pip install langchain langgraph
+   pip install -r requirements.txt
    ```
 
-4. **Install and setup Ollama**
+4. **Configure Environment**
    
-   Visit [Ollama's official website](https://ollama.ai) for installation instructions, or:
-   
-   **Windows/Mac/Linux:**
+   Copy `.env.example` to `.env` and fill in your Gemini API key:
    ```bash
-   # Download from: https://ollama.ai/download
-   # Then pull the Llama model:
-   ollama pull llama3.2
-   ```
-
-5. **Verify Ollama is running**
-   ```bash
-   ollama list
-   # Should show llama3.2 in the list
+   GEMINI_API_KEY=your_gemini_api_key_here
+   GEMINI_MODEL=gemini-1.5-flash
    ```
 
 ### Usage
